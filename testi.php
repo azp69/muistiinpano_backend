@@ -2,6 +2,7 @@
     include_once("modules/muistiinpano.php");
     include_once("modules/tietokanta.php");
     
+
     // LisaaMuistiinpanoTokenilla($kayttajatoken, $otsikko, $data, $vainlukuToken, $kirjoitusToken)
     if (isset($_POST['usertoken']) && isset($_POST['otsikko']) && isset($_POST['data']) && isset($_POST['lisaa']))
     {
@@ -11,7 +12,33 @@
 
         $tk = new Tietokanta;
 
-        $tk->LisaaMuistiinpanoTokenilla($token, $otsikko, $data, "", "");
+        $muistiinpano = $tk->LisaaMuistiinpanoTokenilla($token, $otsikko, $data, "", "");
+        echo $tk->KonvertoiJSONiksi($muistiinpano);
+    }
+
+    else if (isset($_POST['id']) && isset($_POST['usertoken']) && isset($_POST['otsikko']) && isset($_POST['data']) && isset($_POST['paivita']))
+    {
+        $token = $_POST['usertoken'];
+        $otsikko = $_POST['otsikko'];
+        $data = $_POST['data'];
+        $id = $_POST['id'];
+        // echo "DATA:\n Otsikko $otsikko\n Data: $data";
+
+        $tk = new Tietokanta;
+        $muistiinpano = $tk->PaivitaMuistiinpanoTokenilla($id, $token, $otsikko, $data, "", "");
+        echo $tk->KonvertoiJSONiksi($muistiinpano);
+    }
+
+    else if (isset($_GET['usertoken']) && isset($_GET['poista']))
+    {
+        
+        $token = $_GET['usertoken'];
+        $muistiinpanoID = $_GET['poista'];
+        
+        $tk = new Tietokanta;
+        // $tk->TarkastaKayttajaToken($token);
+
+        $tk->PoistaMuistiinpanoTokenilla($token, $muistiinpanoID);
     }
 
     else if (isset($_GET['userid']))
